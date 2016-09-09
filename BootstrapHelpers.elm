@@ -2,6 +2,7 @@ module BootstrapHelpers exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class)
+import Html.Events exposing (onSubmit)
 import Bootstrap.Html exposing (..)
 
 
@@ -33,5 +34,5 @@ inputGroup =
     div [ class "input-group" ]
 
 
-inlineForm =
-    form [ class "inline-form" ]
+inlineForm onSubmitMsg =
+    form [ class "inline-form", onSubmit onSubmitMsg ]

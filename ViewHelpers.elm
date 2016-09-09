@@ -3,7 +3,7 @@ module ViewHelpers exposing (heading, form)
 import Model exposing (Model)
 import Html exposing (..)
 import Html.Attributes exposing (class, type', placeholder, value)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onSubmit)
 import BootstrapHelpers exposing (..)
 import Msg exposing (Msg(..))
 
@@ -18,7 +18,7 @@ heading =
 
 form : Model -> Html Msg
 form model =
-    inlineForm
+    inlineForm FetchGithubData
         [ formGroup
             [ inputGroup
                 [ div [ class "input-group-addon" ] [ text "Press enter to search" ]
