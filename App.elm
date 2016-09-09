@@ -1,15 +1,10 @@
 module MyApp exposing (..)
 
-import Html exposing (Html, text, div)
-import BootstrapHelpers exposing (row, container, col6)
+import Html exposing (Html, text, div, h1, p)
+import BootstrapHelpers exposing (..)
 import Html.App
-import Github exposing (Repositories)
-
-
-type alias Model =
-    { repositories : Maybe Repositories
-    , username : String
-    }
+import ViewHelpers
+import Model exposing (Model)
 
 
 initialModel : Model
@@ -38,8 +33,9 @@ view : Model -> Html Msg
 view model =
     container
         [ row
-            [ (colMd [ div [] [ text "Hello World" ] ])
+            [ col12 [ ViewHelpers.heading ]
             ]
+        , row [ col12 [ ViewHelpers.form model ] ]
         ]
 
 
