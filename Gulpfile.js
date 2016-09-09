@@ -29,5 +29,8 @@ gulp.task('watch-test', ['test'], function() {
 
 
 gulp.task('serve', function() {
-  liveServer.start({ open: false });
+  liveServer.start({
+    open: false,
+    ignore: /elm-stuff/
+  });
 });
