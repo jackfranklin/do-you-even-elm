@@ -5,6 +5,7 @@ import BootstrapHelpers exposing (..)
 import Html.App
 import ViewHelpers
 import Model exposing (Model)
+import Msg exposing (Msg(..))
 
 
 initialModel : Model
@@ -14,16 +15,14 @@ initialModel =
     }
 
 
-type Msg
-    = FetchGithubData
-    | NoOp
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FetchGithubData ->
             ( model, Cmd.none )
+
+        UsernameChange username ->
+            ( { model | username = username }, Cmd.none )
 
         NoOp ->
             ( model, Cmd.none )

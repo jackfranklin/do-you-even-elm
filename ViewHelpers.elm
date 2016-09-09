@@ -2,11 +2,13 @@ module ViewHelpers exposing (heading, form)
 
 import Model exposing (Model)
 import Html exposing (..)
-import Html.Attributes exposing (class, type', placeholder)
+import Html.Attributes exposing (class, type', placeholder, value)
+import Html.Events exposing (onInput)
 import BootstrapHelpers exposing (..)
+import Msg exposing (Msg(..))
 
 
-heading : Html a
+heading : Html Msg
 heading =
     well
         [ (h1 [] [ text "Do you even Elm?" ])
@@ -14,13 +16,13 @@ heading =
         ]
 
 
-form : Model -> Html a
+form : Model -> Html Msg
 form model =
     inlineForm
         [ formGroup
             [ inputGroup
                 [ div [ class "input-group-addon" ] [ text "Press enter to search" ]
-                , input [ type' "text", class "form-control", placeholder "Username" ] []
+                , input [ type' "text", class "form-control", placeholder "Username", value model.username, onInput UsernameChange ] []
                 ]
             ]
         ]
