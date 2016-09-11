@@ -4,8 +4,7 @@ import Html exposing (Html, text, div, h1, p)
 import BootstrapHelpers exposing (..)
 import Html.App
 import ViewHelpers
-import Model exposing (Model)
-import Msg exposing (Msg(..))
+import Types exposing (Msg(..), Model)
 
 
 initialModel : Model
@@ -25,6 +24,12 @@ update msg model =
             ( { model | username = username }, Cmd.none )
 
         NoOp ->
+            ( model, Cmd.none )
+
+        FetchError err ->
+            ( model, Cmd.none )
+
+        NewGithubData repos ->
             ( model, Cmd.none )
 
 

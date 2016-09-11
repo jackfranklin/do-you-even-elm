@@ -1,11 +1,10 @@
 module ViewHelpers exposing (heading, form)
 
-import Model exposing (Model)
 import Html exposing (..)
 import Html.Attributes exposing (class, type', placeholder, value)
 import Html.Events exposing (onInput, onSubmit)
 import BootstrapHelpers exposing (..)
-import Msg exposing (Msg(..))
+import Types exposing (Msg(..), Model)
 
 
 heading : Html Msg
