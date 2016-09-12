@@ -9,7 +9,7 @@ function watchElmAndRun(...args) {
 gulp.task('build', function() {
   return gulp.src('App.elm')
     .pipe($.plumber({
-      errorHandler: $.notify.onError('Elm Compiler Error')
+      errorHandler: $.notify.onError({ sound: false, message: 'Elm error' })
     }))
     .pipe($.elm.bundle('App.js', { warn: true }))
     .pipe(gulp.dest('build/'));
