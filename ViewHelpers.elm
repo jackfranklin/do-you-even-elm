@@ -1,10 +1,11 @@
-module ViewHelpers exposing (heading, form)
+module ViewHelpers exposing (heading, form, repositoriesView)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, type', placeholder, value)
 import Html.Events exposing (onInput, onSubmit)
 import BootstrapHelpers exposing (..)
-import Types exposing (Msg(..), Model)
+import Types exposing (Msg(..), Model, Repositories)
+import RemoteData exposing (WebData, RemoteData(..))
 
 
 heading : Html Msg
@@ -25,3 +26,19 @@ form model =
                 ]
             ]
         ]
+
+
+repositoriesView : WebData Repositories -> Html Msg
+repositoriesView repos =
+    case repos of
+        NotAsked ->
+            div [] [ text "Submit the form to find out how much you Elm!" ]
+
+        Loading ->
+            div [] [ text "Loading..." ]
+
+        Failure err ->
+            div [] [ text "Error" ]
+
+        Success repos ->
+            div [] [ text "Got repos" ]

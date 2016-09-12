@@ -5,11 +5,13 @@ import BootstrapHelpers exposing (..)
 import Html.App
 import ViewHelpers
 import Types exposing (Msg(..), Model)
+import Github
+import RemoteData
 
 
 initialModel : Model
 initialModel =
-    { repositories = Nothing
+    { repositories = RemoteData.NotAsked
     , username = "jackfranklin"
     }
 
@@ -18,7 +20,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FetchGithubData ->
-            ( model, Cmd.none )
+            ( model, Github.fetchGithubData model.username )
 
         UsernameChange username ->
             ( { model | username = username }, Cmd.none )
@@ -26,11 +28,8 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        FetchError err ->
-            ( model, Cmd.none )
-
         NewGithubData repos ->
-            ( model, Cmd.none )
+            ( { model | repositories = repos }, Cmd.none )
 
 
 view : Model -> Html Msg
@@ -40,6 +39,7 @@ view model =
             [ col12 [ ViewHelpers.heading ]
             ]
         , row [ col12 [ ViewHelpers.form model ] ]
+        , row [ col12 [ ViewHelpers.repositoriesView model.repositories ] ]
         ]
 
 

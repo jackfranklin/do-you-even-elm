@@ -1,10 +1,10 @@
 module Types exposing (..)
 
-import Http
+import RemoteData exposing (WebData)
 
 
 type alias Model =
-    { repositories : Maybe Repositories
+    { repositories : WebData Repositories
     , username : String
     }
 
@@ -17,7 +17,7 @@ type alias Repository =
     { name : String
     , htmlUrl : String
     , starCount : Int
-    , language : String
+    , language : Maybe String
     , updated_at : String
     }
 
@@ -25,6 +25,5 @@ type alias Repository =
 type Msg
     = FetchGithubData
     | UsernameChange String
-    | FetchError Http.Error
-    | NewGithubData Repositories
+    | NewGithubData (WebData Repositories)
     | NoOp
