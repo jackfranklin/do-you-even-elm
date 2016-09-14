@@ -42,5 +42,4 @@ type Msg
     = FetchGithubData
     | UsernameChange String
     | NewGithubResponse GithubResponse
-    | NewResult ElmRepoCalculation
     | NoOp

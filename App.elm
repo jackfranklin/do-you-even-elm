@@ -53,9 +53,6 @@ update msg model =
                 , Cmd.none
                 )
 
-        NewResult result ->
-            ( { model | results = Just result }, Cmd.none )
-
 
 view : Model -> Html Msg
 view model =

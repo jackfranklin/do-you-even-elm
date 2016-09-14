@@ -18,7 +18,7 @@ calculate repos =
 
 percentage : Int -> Int -> Float
 percentage x y =
-    (toFloat x / toFloat y) * 100
+    (toFloat x / toFloat y)
 
 
 totalRepositories : Repositories -> Int
@@ -33,7 +33,7 @@ elmRepositories =
 
 elmRepos : Repositories -> Repositories
 elmRepos =
-    List.filter (\r -> r.language == Just "elm")
+    List.filter (\r -> r.language == Just "Elm")
 
 
 getMostPopularElmRepo : Repositories -> Maybe Repository

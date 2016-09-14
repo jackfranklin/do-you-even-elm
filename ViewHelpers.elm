@@ -6,6 +6,7 @@ import Html.Events exposing (onInput, onSubmit)
 import BootstrapHelpers exposing (..)
 import Types exposing (Msg(..), Model, Repositories, ElmRepoCalculation)
 import RemoteData exposing (RemoteData(..), WebData)
+import Numeral
 
 
 heading : Html Msg
@@ -51,4 +52,8 @@ statsView res =
             div [] [ text "Awaiting results..." ]
 
         Just data ->
-            div [] [ text "Got data!" ]
+            div []
+                [ div []
+                    [ h1 [] [ text ((Numeral.format "0.00%" data.percentage) ++ "of your repos are Elm!") ]
+                    ]
+                ]

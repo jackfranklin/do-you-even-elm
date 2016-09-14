@@ -19,12 +19,12 @@ august13 =
 
 elmRepoWithStars : String -> String -> Int -> Repository
 elmRepoWithStars name date stars =
-    Repository name "" stars (Just "elm") date
+    Repository name "" stars (Just "Elm") date
 
 
 elmRepo : String -> String -> Repository
 elmRepo name date =
-    Repository name "" 1 (Just "elm") date
+    Repository name "" 1 (Just "Elm") date
 
 
 miscRepo : String -> String -> Repository
@@ -58,7 +58,7 @@ all =
                     Expect.equal (ElmRepoRatio.calculate repos)
                         { totalRepositories = 3
                         , elmRepositories = 2
-                        , percentage = (2.0 / 3.0) * 100
+                        , percentage = (2.0 / 3.0)
                         , mostPopularElmRepo = Just mostPopular
                         , latestElmRepo = Just latestRepo
                         }
