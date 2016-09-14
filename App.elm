@@ -13,6 +13,7 @@ initialModel : Model
 initialModel =
     { repositories = RemoteData.NotAsked
     , username = "jackfranklin"
+    , results = Nothing
     }
 
 
@@ -20,7 +21,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FetchGithubData ->
-            ( model, Github.fetchGithubData model.username )
+            ( { model | results = Nothing }, Github.fetchGithubData model.username )
 
         UsernameChange username ->
             ( { model | username = username }, Cmd.none )
@@ -30,6 +31,9 @@ update msg model =
 
         NewGithubData repos ->
             ( { model | repositories = repos }, Cmd.none )
+
+        NewResult result ->
+            ( { model | results = Just result }, Cmd.none )
 
 
 view : Model -> Html Msg
