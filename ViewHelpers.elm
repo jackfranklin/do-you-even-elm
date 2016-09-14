@@ -1,10 +1,10 @@
-module ViewHelpers exposing (heading, form, repositoriesView)
+module ViewHelpers exposing (heading, form, repositoriesView, statsView)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, type', placeholder, value)
 import Html.Events exposing (onInput, onSubmit)
 import BootstrapHelpers exposing (..)
-import Types exposing (Msg(..), Model, Repositories)
+import Types exposing (Msg(..), Model, Repositories, ElmRepoCalculation)
 import RemoteData exposing (RemoteData(..), WebData)
 
 
@@ -42,3 +42,13 @@ repositoriesView repos =
 
         Success repos ->
             div [] [ text "Got repos" ]
+
+
+statsView : Maybe ElmRepoCalculation -> Html Msg
+statsView res =
+    case res of
+        Nothing ->
+            div [] [ text "Awaiting results..." ]
+
+        Just data ->
+            div [] [ text "Got data!" ]
