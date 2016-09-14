@@ -32,9 +32,15 @@ type alias Repository =
     }
 
 
+type alias GithubResponse =
+    { linkHeader : Maybe String
+    , repositories : WebData Repositories
+    }
+
+
 type Msg
     = FetchGithubData
     | UsernameChange String
-    | NewGithubData (WebData Repositories)
+    | NewGithubResponse GithubResponse
     | NewResult ElmRepoCalculation
     | NoOp

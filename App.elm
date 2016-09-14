@@ -6,7 +6,8 @@ import Html.App
 import ViewHelpers
 import Types exposing (Msg(..), Model)
 import Github
-import RemoteData
+import RemoteData exposing (WebData)
+import Debug
 
 
 initialModel : Model
@@ -21,7 +22,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FetchGithubData ->
-            ( { model | results = Nothing }, Github.fetchGithubData model.username )
+            ( { model | results = Nothing, repositories = RemoteData.Loading }, Github.fetchGithubData model.username )
 
         UsernameChange username ->
             ( { model | username = username }, Cmd.none )
@@ -29,8 +30,12 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
-        NewGithubData repos ->
-            ( { model | repositories = repos }, Cmd.none )
+        NewGithubResponse { linkHeader, repositories } ->
+            let
+                _ =
+                    Debug.log "linkHeader" linkHeader
+            in
+                ( { model | repositories = repositories }, Cmd.none )
 
         NewResult result ->
             ( { model | results = Just result }, Cmd.none )

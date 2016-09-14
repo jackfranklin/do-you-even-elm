@@ -5,7 +5,7 @@ import Html.Attributes exposing (class, type', placeholder, value)
 import Html.Events exposing (onInput, onSubmit)
 import BootstrapHelpers exposing (..)
 import Types exposing (Msg(..), Model, Repositories)
-import RemoteData exposing (WebData, RemoteData(..))
+import RemoteData exposing (RemoteData(..), WebData)
 
 
 heading : Html Msg
