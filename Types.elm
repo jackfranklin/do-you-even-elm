@@ -43,3 +43,11 @@ type Msg
     | UsernameChange String
     | NewGithubResponse GithubResponse
     | NoOp
+
+
+type alias GithubLinkHeader =
+    { prevPage : Maybe Int
+    , nextPage : Maybe Int
+    , lastPage : Maybe Int
+    , firstPage : Maybe Int
+    }

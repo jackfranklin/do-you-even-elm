@@ -3,7 +3,7 @@ module GithubApi exposing (..)
 import Task exposing (Task)
 import Http
 import Json.Decode
-import Types exposing (GithubResponse, Repositories)
+import Types exposing (GithubResponse, Repositories, GithubLinkHeader)
 import RemoteData exposing (WebData)
 
 
@@ -45,3 +45,12 @@ parseRepositories decoder response =
 
         _ ->
             RemoteData.Failure (Http.UnexpectedPayload "Bad Github response")
+
+
+parseLinkHeader : Maybe String -> Maybe GithubLinkHeader
+parseLinkHeader str =
+    Maybe.map
+        (\header ->
+            GithubLinkHeader Nothing Nothing Nothing Nothing
+        )
+        str

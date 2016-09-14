@@ -5,6 +5,7 @@ import Expect
 import String
 import ElmRepoRatio
 import Types exposing (Repository)
+import GithubApi
 
 
 august12 : String
@@ -39,27 +40,48 @@ noLangRepo name date =
 
 all : Test
 all =
-    describe "ElmRepoRatio.calculate"
-        [ test "It calculates the ratio of Elm repos" <|
-            \() ->
-                let
-                    latestRepo =
-                        elmRepo "foo" august13
+    describe "Do you even Elm tests"
+        [ describe "ElmRepoRatio.calculate"
+            [ test "It calculates the ratio of Elm repos" <|
+                \() ->
+                    let
+                        latestRepo =
+                            elmRepo "foo" august13
 
-                    mostPopular =
-                        elmRepoWithStars "bar" august12 10
+                        mostPopular =
+                            elmRepoWithStars "bar" august12 10
 
-                    notElm =
-                        miscRepo "baz" august12
+                        notElm =
+                            miscRepo "baz" august12
 
-                    repos =
-                        [ latestRepo, mostPopular, notElm ]
-                in
-                    Expect.equal (ElmRepoRatio.calculate repos)
-                        { totalRepositories = 3
-                        , elmRepositories = 2
-                        , percentage = (2.0 / 3.0)
-                        , mostPopularElmRepo = Just mostPopular
-                        , latestElmRepo = Just latestRepo
-                        }
+                        repos =
+                            [ latestRepo, mostPopular, notElm ]
+                    in
+                        Expect.equal (ElmRepoRatio.calculate repos)
+                            { totalRepositories = 3
+                            , elmRepositories = 2
+                            , percentage = (2.0 / 3.0)
+                            , mostPopularElmRepo = Just mostPopular
+                            , latestElmRepo = Just latestRepo
+                            }
+            ]
+        , describe "GithubApi.parseLinkHeader"
+            [ test "When given nothing it returns nothing" <|
+                \() ->
+                    Expect.equal (GithubApi.parseLinkHeader Nothing) Nothing
+            , test "When given a header it can parse it" <|
+                \() ->
+                    let
+                        header =
+                            "<https://api.github.com/user/193238/repos?per_page=100&page=2>; rel=\"next\", <https://api.github.com/user/193238/repos?per_page=100&page=3>; rel=\"last\""
+                    in
+                        Expect.equal (GithubApi.parseLinkHeader (Just header))
+                            (Just
+                                { firstPage = Nothing
+                                , lastPage = Just 3
+                                , nextPage = Just 2
+                                , prevPage = Nothing
+                                }
+                            )
+            ]
         ]
