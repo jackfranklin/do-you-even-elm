@@ -24,7 +24,7 @@ type alias GithubProfile =
     { url : String
     , avatar : String
     , name : String
-    , bio : String
+    , bio : Maybe String
     }
 
 

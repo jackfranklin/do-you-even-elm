@@ -33,4 +33,5 @@ This code is very much WIP! Here's some things which I hope to work on (and welc
 - Cache data, especially once [persistent-cache](https://github.com/elm-lang/persistent-cache) is released.
 - Pull some of the logic around github data out of App.elm and into its own module.
 - Figure out how better to merge two `RemoteData` instances where each one contains an array.
+- Actually show proper error messages!
 

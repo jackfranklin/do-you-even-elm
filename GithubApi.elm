@@ -7,6 +7,7 @@ import Types exposing (GithubResponse, Repositories, GithubLinkHeader)
 import RemoteData exposing (WebData)
 import String
 import Regex
+import GithubToken
 
 
 reposUrl : String -> Int -> String
@@ -14,14 +15,24 @@ reposUrl username page =
     "https://api.github.com/users/" ++ username ++ "/repos?per_page=100&page=" ++ (toString page)
 
 
+requestSettings : String -> Http.Request
+requestSettings url =
+    { verb = "GET"
+    , headers =
+        [ ( "Authorization", GithubToken.token )
+        ]
+    , url = url
+    , body = Http.empty
+    }
+
+
 sendRepoHttpRequest : String -> Int -> Task Http.RawError Http.Response
 sendRepoHttpRequest username page =
-    Http.send Http.defaultSettings
-        { verb = "GET"
-        , headers = []
-        , url = reposUrl username page
-        , body = Http.empty
-        }
+    Http.send Http.defaultSettings (requestSettings (reposUrl username page))
+
+
+sendProfileHttpRequest url =
+    Http.send Http.defaultSettings (requestSettings url)
 
 
 promoteRawErrorToGithubResponse : Http.RawError -> GithubResponse

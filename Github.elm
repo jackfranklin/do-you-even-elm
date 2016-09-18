@@ -31,12 +31,13 @@ profileDecoder =
         |: ("html_url" := Json.Decode.string)
         |: ("avatar_url" := Json.Decode.string)
         |: ("name" := Json.Decode.string)
-        |: ("bio" := Json.Decode.string)
+        |: (maybe ("bio" := Json.Decode.string))
 
 
 fetchGithubProfile : String -> Cmd Msg
 fetchGithubProfile username =
-    Http.get profileDecoder ("https://api.github.com/users/" ++ username)
+    GithubApi.sendProfileHttpRequest ("https://api.github.com/users/" ++ username)
+        |> Http.fromJson profileDecoder
         |> RemoteData.asCmd
         |> Cmd.map NewGithubProfile
 

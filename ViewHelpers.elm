@@ -11,6 +11,7 @@ import String
 import Numeral
 import Date.Format as DateFormat
 import String.Extra
+import Debug
 
 
 heading : Html Msg
@@ -54,7 +55,7 @@ profileView profile =
                         ]
                     , div [ class "media-body" ]
                         [ h4 [ class "media-heading" ] [ text name ]
-                        , p [] [ text bio ]
+                        , p [] [ text (Maybe.withDefault "" bio) ]
                         , p []
                             [ a [ href url ]
                                 [ text "View profile on GitHub"
