@@ -1,0 +1,1 @@
+module GithubApiClient.Types exposing (..)
