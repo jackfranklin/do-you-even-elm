@@ -16,7 +16,8 @@
         "evancz/elm-http": "3.0.1 <= v < 4.0.0",
         "ggb/numeral-elm": "1.2.1 <= v < 2.0.0",
         "krisajenkins/remotedata": "2.3.0 <= v < 3.0.0",
-        "lukewestby/elm-http-builder": "3.0.0 <= v < 4.0.0"
+        "lukewestby/elm-http-builder": "3.0.0 <= v < 4.0.0",
+        "mgold/elm-date-format": "1.1.5 <= v < 2.0.0"
     },
     "elm-version": "0.17.0 <= v < 0.18.0"
 }

@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onSubmit)
 import Bootstrap.Html exposing (..)
+import Types exposing (Msg)
 
 
 row =
@@ -36,3 +37,13 @@ inputGroup =
 
 inlineForm onSubmitMsg =
     form [ class "inline-form", onSubmit onSubmitMsg ]
+
+
+panel : String -> List (Html Msg) -> Html Msg
+panel headingText bodyElements =
+    div [ class "panel panel-default" ]
+        [ div [ class "panel-heading" ]
+            [ h3 [ class "panel-title" ] [ text headingText ]
+            ]
+        , div [ class "panel-body" ] bodyElements
+        ]

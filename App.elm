@@ -52,9 +52,6 @@ update msg model =
                 headers =
                     GithubApi.parseLinkHeader linkHeader
 
-                _ =
-                    Debug.log "linkHeaderParsed" headers
-
                 nextCommand =
                     case headers of
                         Just { nextPage } ->
@@ -80,7 +77,7 @@ update msg model =
                         , results = calculateResults mergedRepos
                     }
             in
-                ( Debug.log "newModel" newModel
+                ( newModel
                 , if requestSucceeded then
                     nextCommand
                   else

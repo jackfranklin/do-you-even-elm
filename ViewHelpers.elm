@@ -1,12 +1,15 @@
 module ViewHelpers exposing (heading, form, repositoriesView, statsView)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, type', placeholder, value)
+import Html.Attributes exposing (class, type', placeholder, value, href)
 import Html.Events exposing (onInput, onSubmit)
 import BootstrapHelpers exposing (..)
-import Types exposing (Msg(..), Model, Repositories, ElmRepoCalculation)
+import Types exposing (Msg(..), Model, Repositories, ElmRepoCalculation, Repository)
 import RemoteData exposing (RemoteData(..), WebData)
+import Date
+import String
 import Numeral
+import Date.Format as DateFormat
 
 
 heading : Html Msg
@@ -32,28 +35,87 @@ form model =
 repositoriesView : WebData Repositories -> Html Msg
 repositoriesView repos =
     case repos of
-        NotAsked ->
-            div [] [ text "Submit the form to find out how much you Elm!" ]
-
         Loading ->
             div [] [ text "Loading..." ]
 
         Failure err ->
-            div [] [ text "Error" ]
+            div [] [ text "Sorry, an error occured. You should tweet @Jack_Franklin to let him know." ]
 
-        Success repos ->
-            div [] [ text "Got repos" ]
+        _ ->
+            div [] []
+
+
+repoCount : ElmRepoCalculation -> Html Msg
+repoCount { elmRepositories, totalRepositories } =
+    let
+        parts =
+            [ "You have a total of "
+            , toString totalRepositories
+            , " repositories, of which "
+            , toString elmRepositories
+            , " are written in Elm."
+            ]
+    in
+        text (String.join "" parts)
+
+
+repositoryDateFormatted : String -> String
+repositoryDateFormatted str =
+    case Date.fromString str of
+        Ok date ->
+            DateFormat.format "%A %B %Y at %H:%M" date
+
+        Err _ ->
+            "Date parsing error :("
+
+
+featuredRepoPanel : String -> Maybe Repository -> Html Msg
+featuredRepoPanel heading repo =
+    case repo of
+        Just r ->
+            BootstrapHelpers.panel heading
+                [ p [] [ repoPanelLink r ]
+                , p [] [ text ("Last updated on " ++ (repositoryDateFormatted r.updatedAt)) ]
+                ]
+
+        Nothing ->
+            div [] []
+
+
+mostPopularRepo : Maybe Repository -> Html Msg
+mostPopularRepo =
+    featuredRepoPanel "Your most popular Elm repository"
+
+
+repoPanelLink : Repository -> Html Msg
+repoPanelLink { name, htmlUrl, starCount } =
+    p []
+        [ link name htmlUrl
+        , text (" with " ++ (toString starCount) ++ " stars")
+        ]
+
+
+link : String -> String -> Html Msg
+link str url =
+    a [ href url ] [ text str ]
+
+
+latestElmRepo : Maybe Repository -> Html Msg
+latestElmRepo =
+    featuredRepoPanel "Your last updated Elm repository"
 
 
 statsView : Maybe ElmRepoCalculation -> Html Msg
 statsView res =
     case res of
         Nothing ->
-            div [] [ text "Awaiting results..." ]
+            div [] []
 
         Just data ->
             div []
-                [ div []
-                    [ h1 [] [ text ((Numeral.format "0.00%" data.percentage) ++ "of your repos are Elm!") ]
+                [ BootstrapHelpers.panel ((Numeral.format "0.00%" data.percentage) ++ " of your repos are Elm!")
+                    [ p [] [ repoCount data ]
                     ]
+                , mostPopularRepo data.mostPopularElmRepo
+                , latestElmRepo data.latestElmRepo
                 ]
