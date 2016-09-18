@@ -11,13 +11,17 @@
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
+    "del": "2.2.2",
     "elm-test": "0.17.3",
     "gulp": "3.9.1",
     "gulp-elm": "^0.4.0",
     "gulp-load-plugins": "1.2.4",
     "gulp-notify": "2.2.0",
     "gulp-plumber": "1.1.0",
+    "gulp-sequence": "0.4.6",
     "gulp-shell": "0.5.2",
+    "gulp-surge": "0.1.0",
+    "gulp-uglify": "2.0.0",
     "gulp-watch": "4.3.6",
     "live-server": "1.0.0"
   }
