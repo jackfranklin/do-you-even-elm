@@ -17,6 +17,7 @@ initialModel =
     { repositories = RemoteData.NotAsked
     , username = "jackfranklin"
     , results = Nothing
+    , githubProfile = RemoteData.NotAsked
     }
 
 
@@ -37,8 +38,12 @@ update msg model =
             ( { model
                 | results = Nothing
                 , repositories = RemoteData.Loading
+                , githubProfile = RemoteData.Loading
               }
-            , Github.fetchGithubData model.username 1
+            , Cmd.batch
+                [ Github.fetchGithubData model.username 1
+                , Github.fetchGithubProfile model.username
+                ]
             )
 
         UsernameChange username ->
@@ -46,6 +51,9 @@ update msg model =
 
         NoOp ->
             ( model, Cmd.none )
+
+        NewGithubProfile profile ->
+            ( { model | githubProfile = profile }, Cmd.none )
 
         NewGithubResponse { linkHeader, repositories } ->
             let
@@ -110,6 +118,7 @@ view model =
             [ col12 [ ViewHelpers.heading ]
             ]
         , row [ col12 [ ViewHelpers.form model ] ]
+        , row [ col12 [ ViewHelpers.profileView model.githubProfile ] ]
         , row [ col12 [ ViewHelpers.repositoriesView model.repositories ] ]
         , row [ col12 [ ViewHelpers.statsView model.results ] ]
         ]

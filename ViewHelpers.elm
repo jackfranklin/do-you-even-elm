@@ -1,10 +1,10 @@
-module ViewHelpers exposing (heading, form, repositoriesView, statsView)
+module ViewHelpers exposing (heading, form, repositoriesView, statsView, profileView)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, type', placeholder, value, href)
+import Html.Attributes exposing (class, type', placeholder, value, href, src)
 import Html.Events exposing (onInput, onSubmit)
 import BootstrapHelpers exposing (..)
-import Types exposing (Msg(..), Model, Repositories, ElmRepoCalculation, Repository)
+import Types exposing (Msg(..), Model, Repositories, ElmRepoCalculation, Repository, GithubProfile)
 import RemoteData exposing (RemoteData(..), WebData)
 import Date
 import String
@@ -37,6 +37,38 @@ form model =
                 ]
             ]
         ]
+
+
+profileView : WebData GithubProfile -> Html Msg
+profileView profile =
+    case profile of
+        RemoteData.Loading ->
+            div [] [ text "Loading your profile..." ]
+
+        RemoteData.Success { avatar, name, bio, url } ->
+            BootstrapHelpers.panel "GitHub Profile"
+                [ div [ class "media" ]
+                    [ div [ class "media-left" ]
+                        [ img [ class "media-object", src avatar ] []
+                        ]
+                    , div [ class "media-body" ]
+                        [ h4 [ class "media-heading" ] [ text name ]
+                        , p [] [ text bio ]
+                        , p []
+                            [ a [ href url ]
+                                [ text "View profile on GitHub"
+                                ]
+                            , text "."
+                            ]
+                        ]
+                    ]
+                ]
+
+        RemoteData.Failure e ->
+            div [] [ text "Couldn't get your GitHub profile :(" ]
+
+        RemoteData.NotAsked ->
+            div [] []
 
 
 repositoriesView : WebData Repositories -> Html Msg

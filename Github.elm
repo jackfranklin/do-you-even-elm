@@ -1,11 +1,13 @@
-module Github exposing (fetchGithubData)
+module Github exposing (fetchGithubData, fetchGithubProfile)
 
 import Json.Decode exposing (succeed, (:=), oneOf, maybe)
 import Json.Decode.Extra exposing ((|:))
-import Types exposing (Repository, Repositories, Msg(..), GithubResponse)
+import Types exposing (Repository, Repositories, Msg(..), GithubResponse, GithubProfile)
 import Task exposing (Task)
 import Dict
 import GithubApi
+import RemoteData
+import Http
 
 
 repositoryDecoder : Json.Decode.Decoder Repository
@@ -21,6 +23,22 @@ repositoryDecoder =
 repositoriesDecoder : Json.Decode.Decoder Repositories
 repositoriesDecoder =
     Json.Decode.list repositoryDecoder
+
+
+profileDecoder : Json.Decode.Decoder GithubProfile
+profileDecoder =
+    succeed GithubProfile
+        |: ("html_url" := Json.Decode.string)
+        |: ("avatar_url" := Json.Decode.string)
+        |: ("name" := Json.Decode.string)
+        |: ("bio" := Json.Decode.string)
+
+
+fetchGithubProfile : String -> Cmd Msg
+fetchGithubProfile username =
+    Http.get profileDecoder ("https://api.github.com/users/" ++ username)
+        |> RemoteData.asCmd
+        |> Cmd.map NewGithubProfile
 
 
 fetchGithubData : String -> Int -> Cmd Msg

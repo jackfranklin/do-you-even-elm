@@ -7,6 +7,7 @@ type alias Model =
     { repositories : WebData Repositories
     , username : String
     , results : Maybe ElmRepoCalculation
+    , githubProfile : WebData GithubProfile
     }
 
 
@@ -16,6 +17,14 @@ type alias ElmRepoCalculation =
     , percentage : Float
     , mostPopularElmRepo : Maybe Repository
     , latestElmRepo : Maybe Repository
+    }
+
+
+type alias GithubProfile =
+    { url : String
+    , avatar : String
+    , name : String
+    , bio : String
     }
 
 
@@ -43,6 +52,7 @@ type Msg
     | UsernameChange String
     | NewGithubResponse GithubResponse
     | NoOp
+    | NewGithubProfile (WebData GithubProfile)
 
 
 type alias GithubLinkHeader =
