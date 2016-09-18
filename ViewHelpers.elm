@@ -16,7 +16,14 @@ heading : Html Msg
 heading =
     well
         [ (h1 [] [ text "Do you even Elm?" ])
-        , (p [] [ text "Enter your GitHub name to see how Elm-ey you are!" ])
+        , p [] [ text "Enter your GitHub name to see how Elm-ey you are!" ]
+        , p []
+            [ text "Built by "
+            , a [ href "http://twitter.com/Jack_Franklin" ] [ text "Jack Franklin" ]
+            , text ", written entirely in Elm and fully "
+            , a [ href "http://github.com/jackfranklin/do-you-even-elm" ] [ text "open sourced on GitHub" ]
+            , text "."
+            ]
         ]
 
 
