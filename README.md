@@ -13,6 +13,19 @@ Built with Elm, hosted at doyouevenelm.com by surge.sh.
 
 Changes are live reloaded in the browser, and Elm output is available in the console.
 
+You'll also need to create `GithubToken.elm` that looks like so:
+
+```elm
+module GithubToken exposing (token)
+
+
+token : String
+token =
+    "token personal-access-token-here"
+```
+
+This is used to authenticate requests to GitHub as to not get rate limited so often.
+
 ## Tests
 
 - `gulp test`
