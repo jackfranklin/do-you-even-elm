@@ -10,6 +10,7 @@ import Date
 import String
 import Numeral
 import Date.Format as DateFormat
+import String.Extra
 
 
 heading : Html Msg
@@ -114,7 +115,7 @@ featuredRepoPanel heading repo =
         Just r ->
             BootstrapHelpers.panel heading
                 [ p [] [ repoPanelLink r ]
-                , p [] [ text ("Last updated on " ++ (repositoryDateFormatted r.updatedAt)) ]
+                , p [] [ text ("Last updated on " ++ (repositoryDateFormatted r.updatedAt) ++ ".") ]
                 ]
 
         Nothing ->
@@ -130,7 +131,13 @@ repoPanelLink : Repository -> Html Msg
 repoPanelLink { name, htmlUrl, starCount } =
     p []
         [ link name htmlUrl
-        , text (" with " ++ (toString starCount) ++ " stars")
+        , text
+            (String.join ""
+                [ " with "
+                , String.Extra.pluralize "star" "stars" starCount
+                , "."
+                ]
+            )
         ]
 
 
