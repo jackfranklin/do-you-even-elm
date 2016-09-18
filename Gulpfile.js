@@ -63,3 +63,5 @@ gulp.task('serve', function() {
     ignore: /elm-stuff/
   });
 });
+
+gulp.task('default', ['serve', 'start']);
