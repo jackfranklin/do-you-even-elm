@@ -6,6 +6,7 @@ import Html.App
 import ViewHelpers
 import Types exposing (Msg(..), Model, ElmRepoCalculation, Repositories)
 import Github
+import GithubApi
 import RemoteData exposing (WebData)
 import Debug
 import ElmRepoRatio
@@ -33,7 +34,12 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FetchGithubData ->
-            ( { model | results = Nothing, repositories = RemoteData.Loading }, Github.fetchGithubData model.username )
+            ( { model
+                | results = Nothing
+                , repositories = RemoteData.Loading
+              }
+            , Github.fetchGithubData model.username 1
+            )
 
         UsernameChange username ->
             ( { model | username = username }, Cmd.none )
@@ -43,15 +49,61 @@ update msg model =
 
         NewGithubResponse { linkHeader, repositories } ->
             let
+                headers =
+                    GithubApi.parseLinkHeader linkHeader
+
                 _ =
-                    Debug.log "linkHeader" linkHeader
+                    Debug.log "linkHeaderParsed" headers
+
+                nextCommand =
+                    case headers of
+                        Just { nextPage } ->
+                            case nextPage of
+                                Just x ->
+                                    Github.fetchGithubData model.username x
+
+                                Nothing ->
+                                    Cmd.none
+
+                        Nothing ->
+                            Cmd.none
+
+                requestSucceeded =
+                    RemoteData.isSuccess repositories
+
+                mergedRepos =
+                    appendRemoteDataRepositories model.repositories repositories
+
+                newModel =
+                    { model
+                        | repositories = mergedRepos
+                        , results = calculateResults mergedRepos
+                    }
             in
-                ( { model
-                    | repositories = repositories
-                    , results = calculateResults repositories
-                  }
-                , Cmd.none
+                ( Debug.log "newModel" newModel
+                , if requestSucceeded then
+                    nextCommand
+                  else
+                    Cmd.none
                 )
+
+
+appendRemoteDataRepositories : WebData Repositories -> WebData Repositories -> WebData Repositories
+appendRemoteDataRepositories first second =
+    case first of
+        RemoteData.Success repos ->
+            case second of
+                RemoteData.Success newRepos ->
+                    RemoteData.Success (repos ++ newRepos)
+
+                RemoteData.Failure e ->
+                    RemoteData.Failure e
+
+                _ ->
+                    first
+
+        _ ->
+            second
 
 
 view : Model -> Html Msg

@@ -23,8 +23,8 @@ repositoriesDecoder =
     Json.Decode.list repositoryDecoder
 
 
-fetchGithubData : String -> Cmd Msg
-fetchGithubData username =
+fetchGithubData : String -> Int -> Cmd Msg
+fetchGithubData username page =
     Task.perform (NewGithubResponse << GithubApi.promoteRawErrorToGithubResponse)
         (\response ->
             NewGithubResponse
@@ -32,4 +32,4 @@ fetchGithubData username =
                 , repositories = GithubApi.parseRepositories repositoriesDecoder response
                 }
         )
-        (GithubApi.sendRepoHttpRequest username)
+        (GithubApi.sendRepoHttpRequest username page)

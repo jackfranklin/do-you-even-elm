@@ -9,17 +9,17 @@ import String
 import Regex
 
 
-reposUrl : String -> String
-reposUrl username =
-    "https://api.github.com/users/" ++ username ++ "/repos"
+reposUrl : String -> Int -> String
+reposUrl username page =
+    "https://api.github.com/users/" ++ username ++ "/repos?per_page=100&page=" ++ (toString page)
 
 
-sendRepoHttpRequest : String -> Task Http.RawError Http.Response
-sendRepoHttpRequest username =
+sendRepoHttpRequest : String -> Int -> Task Http.RawError Http.Response
+sendRepoHttpRequest username page =
     Http.send Http.defaultSettings
         { verb = "GET"
         , headers = []
-        , url = reposUrl username
+        , url = reposUrl username page
         , body = Http.empty
         }
 
