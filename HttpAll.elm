@@ -60,9 +60,9 @@ mapTask successDecoder t =
 
 makeRequest :
     Json.Decode.Decoder a
-    -> (Http.Error -> b)
-    -> (HttpAllResponse a -> b)
+    -> (Http.Error -> msg)
+    -> (HttpAllResponse a -> msg)
     -> Task Http.RawError Http.Response
-    -> Cmd b
+    -> Cmd msg
 makeRequest successDecoder onFail onSuccess request =
     Task.perform onFail onSuccess (mapTask successDecoder request)
