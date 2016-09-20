@@ -51,7 +51,7 @@ fetchGithubData username page =
         (\response ->
             NewGithubResponse
                 { linkHeader = Dict.get "Link" response.raw.headers
-                , repositories = (RemoteData.Success response.data)
+                , repositories = (RemoteData.Success response.parsed)
                 }
         )
         (GithubApi.sendRepoHttpRequest username page)

@@ -14,7 +14,7 @@ import Json.Decode
 
 type alias HttpAllResponse a =
     { raw : Http.Response
-    , data : a
+    , parsed : a
     }
 
 
@@ -38,7 +38,7 @@ parseResponse decoder response =
             case Json.Decode.decodeString decoder str of
                 Ok x ->
                     Task.succeed
-                        ({ data = x
+                        ({ parsed = x
                          , raw = response
                          }
                         )
