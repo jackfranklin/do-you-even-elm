@@ -3,11 +3,11 @@ module Github exposing (fetchGithubData, fetchGithubProfile)
 import Json.Decode exposing (succeed, (:=), oneOf, maybe)
 import Json.Decode.Extra exposing ((|:))
 import Types exposing (Repository, Repositories, Msg(..), GithubResponse, GithubProfile)
-import Task exposing (Task)
 import Dict
 import GithubApi
 import RemoteData
 import Http
+import HttpAll
 
 
 repositoryDecoder : Json.Decode.Decoder Repository
@@ -44,11 +44,14 @@ fetchGithubProfile username =
 
 fetchGithubData : String -> Int -> Cmd Msg
 fetchGithubData username page =
-    Task.perform (NewGithubResponse << GithubApi.promoteRawErrorToGithubResponse)
+    HttpAll.makeRequest repositoriesDecoder
+        (\httpErr ->
+            NewGithubResponse (GithubResponse Nothing (RemoteData.Failure httpErr))
+        )
         (\response ->
             NewGithubResponse
-                { linkHeader = Dict.get "Link" response.headers
-                , repositories = GithubApi.parseRepositories repositoriesDecoder response
+                { linkHeader = Dict.get "Link" response.raw.headers
+                , repositories = (RemoteData.Success response.data)
                 }
         )
         (GithubApi.sendRepoHttpRequest username page)

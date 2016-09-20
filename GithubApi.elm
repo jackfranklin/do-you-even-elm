@@ -35,31 +35,6 @@ sendProfileHttpRequest url =
     Http.send Http.defaultSettings (requestSettings url)
 
 
-promoteRawErrorToGithubResponse : Http.RawError -> GithubResponse
-promoteRawErrorToGithubResponse e =
-    case e of
-        Http.RawTimeout ->
-            GithubResponse Nothing (RemoteData.Failure Http.Timeout)
-
-        Http.RawNetworkError ->
-            GithubResponse Nothing (RemoteData.Failure Http.NetworkError)
-
-
-parseRepositories : Json.Decode.Decoder Repositories -> Http.Response -> WebData Repositories
-parseRepositories decoder response =
-    case response.value of
-        Http.Text str ->
-            case Json.Decode.decodeString decoder str of
-                Ok repos ->
-                    RemoteData.Success repos
-
-                Err e ->
-                    RemoteData.Failure (Http.UnexpectedPayload e)
-
-        _ ->
-            RemoteData.Failure (Http.UnexpectedPayload "Bad Github response")
-
-
 parseLinkHeader : Maybe String -> Maybe GithubLinkHeader
 parseLinkHeader =
     Maybe.map parseLinkHeaderResult
