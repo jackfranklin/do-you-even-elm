@@ -37,7 +37,7 @@ type alias Repository =
     , htmlUrl : String
     , starCount : Int
     , language : Maybe String
-    , updatedAt : String
+    , pushedAt : String
     }
 
 
