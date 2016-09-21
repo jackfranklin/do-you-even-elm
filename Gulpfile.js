@@ -56,6 +56,7 @@ gulp.task('build-prod', function() {
 gulp.task('build-prod', ['prod:vendor', 'prod:html', 'prod:elm']);
 
 gulp.task('deploy', function() {
+  console.log('Deploying version: ', require('./package.json').version);
   return $.surge({
     project: './dist',
     domain: 'doyouevenelm.com'
