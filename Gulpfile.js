@@ -36,7 +36,7 @@ gulp.task('prod:html', ['prod:clean'], function() {
 });
 
 function makeProdBumpTask(level) {
-  gulp.task('prod:' + level, function() {
+  gulp.task('prod:' + level, ['prod:vendor', 'prod:html', 'prod:elm'], function() {
     return gulp.src(['./package.json', './elm-package.json'])
       .pipe($.bump({ type: level }))
       .pipe(gulp.dest('./'))
@@ -50,13 +50,11 @@ makeProdBumpTask('minor');
 makeProdBumpTask('major');
 
 gulp.task('build-prod', function() {
-  console.log('You need to use `gulp prod:` with `patch`, `minor` or `major`');
+  $.util.log('You need to use `gulp prod:` with `patch`, `minor` or `major`');
 });
 
-gulp.task('build-prod', ['prod:vendor', 'prod:html', 'prod:elm']);
-
 gulp.task('deploy', function() {
-  console.log('Deploying version: ', require('./package.json').version);
+  $.util.log('Deploying version: ', require('./package.json').version);
   return $.surge({
     project: './dist',
     domain: 'doyouevenelm.com'
