@@ -104,7 +104,7 @@ repositoryDateFormatted : String -> String
 repositoryDateFormatted str =
     case Date.fromString str of
         Ok date ->
-            DateFormat.format "%A %B %Y at %H:%M" date
+            DateFormat.format "%A %d %B %Y at %H:%M" date
 
         Err _ ->
             "Date parsing error :("
@@ -116,7 +116,7 @@ featuredRepoPanel heading repo =
         Just r ->
             BootstrapHelpers.panel heading
                 [ p [] [ repoPanelLink r ]
-                , p [] [ text ("Last updated on " ++ (repositoryDateFormatted r.updatedAt) ++ ".") ]
+                , p [] [ text ("Last pushed on " ++ (repositoryDateFormatted r.pushedAt) ++ ".") ]
                 ]
 
         Nothing ->

@@ -49,7 +49,7 @@ getLatestElmRepo repos =
     elmRepos repos
         |> List.sortBy
             (\repo ->
-                Date.fromString repo.updatedAt
+                Date.fromString repo.pushedAt
                     |> Result.map Date.toTime
                     |> Result.map Time.inMilliseconds
                     |> Result.toMaybe

@@ -17,7 +17,7 @@ repositoryDecoder =
         |: ("html_url" := Json.Decode.string)
         |: ("stargazers_count" := Json.Decode.int)
         |: (maybe ("language" := Json.Decode.string))
-        |: ("updated_at" := Json.Decode.string)
+        |: ("pushed_at" := Json.Decode.string)
 
 
 repositoriesDecoder : Json.Decode.Decoder Repositories
