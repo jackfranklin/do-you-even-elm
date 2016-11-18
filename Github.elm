@@ -42,6 +42,12 @@ fetchGithubProfile username =
         |> Cmd.map NewGithubProfile
 
 
+parseGithubRepoResponse :
+    Result Http.Error
+        { parsed : Repositories
+        , raw : Http.Response String
+        }
+    -> Msg
 parseGithubRepoResponse res =
     case res of
         Err e ->

@@ -7,7 +7,6 @@ import Types exposing (Msg(..), Model, ElmRepoCalculation, Repositories)
 import Github
 import GithubApi
 import RemoteData exposing (WebData)
-import Debug
 import ElmRepoRatio
 
 

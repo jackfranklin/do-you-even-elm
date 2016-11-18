@@ -1,11 +1,9 @@
 module GithubApi exposing (..)
 
-import Task exposing (Task)
 import Http
 import Json.Decode exposing (succeed, field, oneOf, maybe)
 import Json.Decode.Extra exposing ((|:))
 import Types exposing (GithubResponse, Repositories, GithubLinkHeader, Repository)
-import RemoteData exposing (WebData)
 import String
 import Regex
 import GithubToken
@@ -57,6 +55,9 @@ githubRepoRequest username page =
         }
 
 
+parseGithubResponse :
+    Http.Response String
+    -> Result String { parsed : Repositories, raw : Http.Response String }
 parseGithubResponse rawResponse =
     let
         parsed =
@@ -64,7 +65,6 @@ parseGithubResponse rawResponse =
     in
         case parsed of
             Err e ->
-                -- Err (Http.BadPayload "Bad repo JSON" rawResponse)
                 Err e
 
             Ok repos ->
