@@ -1,7 +1,7 @@
 module ViewHelpers exposing (heading, form, repositoriesView, statsView, profileView)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, type', placeholder, value, href, src)
+import Html.Attributes exposing (class, type_, placeholder, value, href, src)
 import Html.Events exposing (onInput, onSubmit)
 import BootstrapHelpers exposing (..)
 import Types exposing (Msg(..), Model, Repositories, ElmRepoCalculation, Repository, GithubProfile)
@@ -10,8 +10,6 @@ import Date
 import String
 import Numeral
 import Date.Format as DateFormat
-import String.Extra
-import Debug
 
 
 heading : Html Msg
@@ -35,7 +33,7 @@ form model =
         [ formGroup
             [ inputGroup
                 [ div [ class "input-group-addon" ] [ text "Press enter to search" ]
-                , input [ type' "text", class "form-control", placeholder "Username", value model.username, onInput UsernameChange ] []
+                , input [ type_ "text", class "form-control", placeholder "Username", value model.username, onInput UsernameChange ] []
                 ]
             ]
         ]
@@ -128,6 +126,14 @@ mostPopularRepo =
     featuredRepoPanel "Your most popular Elm repository"
 
 
+pluralize : String -> String -> number -> String
+pluralize singular plural count =
+    if count == 1 then
+        "1 " ++ singular
+    else
+        (toString count) ++ " " ++ plural
+
+
 repoPanelLink : Repository -> Html Msg
 repoPanelLink { name, htmlUrl, starCount } =
     p []
@@ -135,7 +141,7 @@ repoPanelLink { name, htmlUrl, starCount } =
         , text
             (String.join ""
                 [ " with "
-                , String.Extra.pluralize "star" "stars" starCount
+                , pluralize "star" "stars" starCount
                 , "."
                 ]
             )
