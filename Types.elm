@@ -53,11 +53,3 @@ type Msg
     | NewGithubResponse GithubResponse
     | NoOp
     | NewGithubProfile (WebData GithubProfile)
-
-
-type alias GithubLinkHeader =
-    { prevPage : Maybe Int
-    , nextPage : Maybe Int
-    , lastPage : Maybe Int
-    , firstPage : Maybe Int
-    }

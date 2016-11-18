@@ -3,11 +3,12 @@ module GithubApi exposing (..)
 import Http
 import Json.Decode exposing (succeed, field, oneOf, maybe)
 import Json.Decode.Extra exposing ((|:))
-import Types exposing (GithubResponse, Repositories, GithubLinkHeader, Repository)
+import Types exposing (GithubResponse, Repositories, Repository)
 import String
 import Regex
 import GithubToken
 import Dict exposing (Dict)
+import LinkHeaderParser exposing (GithubLinkHeader)
 
 
 reposUrl : String -> Int -> String
@@ -76,80 +77,4 @@ parseGithubResponse rawResponse =
 
 parseLinkHeader : Maybe String -> Maybe GithubLinkHeader
 parseLinkHeader =
-    Maybe.map parseLinkHeaderResult
-
-
-parseLinkHeaderResult : String -> GithubLinkHeader
-parseLinkHeaderResult str =
-    let
-        headers =
-            String.split "," str
-    in
-        { firstPage = findFirstPage headers
-        , prevPage = findPrevPage headers
-        , nextPage = findNextPage headers
-        , lastPage = findLastPage headers
-        }
-
-
-runHeaderThroughRegex : String -> List Regex.Match
-runHeaderThroughRegex =
-    Regex.find Regex.All (Regex.regex ".+&page=(\\d+).+rel=\"(\\w+)\"")
-
-
-findSubMatchForString : String -> List Regex.Match -> Bool
-findSubMatchForString str matches =
-    List.any
-        (\match ->
-            List.any (\sub -> sub == Just str) match.submatches
-        )
-        matches
-
-
-maybeFlatten : Maybe (Maybe a) -> Maybe a
-maybeFlatten m =
-    case m of
-        Just (Just v) ->
-            Just v
-
-        _ ->
-            Nothing
-
-
-findNextPage : List String -> Maybe Int
-findNextPage =
-    findPageByRel "next"
-
-
-findPrevPage : List String -> Maybe Int
-findPrevPage =
-    findPageByRel "prev"
-
-
-findFirstPage : List String -> Maybe Int
-findFirstPage =
-    findPageByRel "first"
-
-
-findLastPage : List String -> Maybe Int
-findLastPage =
-    findPageByRel "last"
-
-
-
--- TODO: the amount of flattens is pretty rubbish
--- got to be a better way to work with this data
-
-
-findPageByRel : String -> List String -> Maybe Int
-findPageByRel rel headers =
-    List.map runHeaderThroughRegex headers
-        |> List.filter (findSubMatchForString rel)
-        |> List.head
-        |> Maybe.map List.head
-        |> maybeFlatten
-        |> Maybe.map (\m -> List.head m.submatches)
-        |> maybeFlatten
-        |> maybeFlatten
-        |> Maybe.map (\m -> Result.toMaybe (String.toInt m))
-        |> maybeFlatten
+    Maybe.map LinkHeaderParser.parse
