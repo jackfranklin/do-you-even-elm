@@ -3,32 +3,31 @@ module BootstrapHelpers exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import Html.Events exposing (onSubmit)
-import Bootstrap.Html exposing (..)
 import Types exposing (Msg)
 
 
 row =
-    row_
+    div [ class "row" ]
 
 
 well =
-    well_
+    div [ class "well" ]
 
 
 container =
-    container_
+    div [ class "container" ]
 
 
 col12 =
-    colMd_ 12 12 12
+    div [ class "col-md-12" ]
 
 
 col6 =
-    colMd_ 6 6 6
+    div [ class "col-md-6" ]
 
 
 formGroup =
-    formGroup_
+    div [ class "form-group" ]
 
 
 inputGroup =

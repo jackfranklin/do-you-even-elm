@@ -2,12 +2,14 @@ module GithubApi exposing (..)
 
 import Task exposing (Task)
 import Http
-import Json.Decode
-import Types exposing (GithubResponse, Repositories, GithubLinkHeader)
+import Json.Decode exposing (succeed, field, oneOf, maybe)
+import Json.Decode.Extra exposing ((|:))
+import Types exposing (GithubResponse, Repositories, GithubLinkHeader, Repository)
 import RemoteData exposing (WebData)
 import String
 import Regex
 import GithubToken
+import Dict exposing (Dict)
 
 
 reposUrl : String -> Int -> String
@@ -15,24 +17,61 @@ reposUrl username page =
     "https://api.github.com/users/" ++ username ++ "/repos?per_page=100&page=" ++ (toString page)
 
 
-requestSettings : String -> Http.Request
-requestSettings url =
-    { verb = "GET"
-    , headers =
-        [ ( "Authorization", GithubToken.token )
-        ]
-    , url = url
-    , body = Http.empty
-    }
+repositoryDecoder : Json.Decode.Decoder Repository
+repositoryDecoder =
+    succeed Repository
+        |: (field "name" Json.Decode.string)
+        |: (field "html_url" Json.Decode.string)
+        |: (field "stargazers_count" Json.Decode.int)
+        |: (maybe (field "language" Json.Decode.string))
+        |: (field "updated_at" Json.Decode.string)
 
 
-sendRepoHttpRequest : String -> Int -> Task Http.RawError Http.Response
-sendRepoHttpRequest username page =
-    Http.send Http.defaultSettings (requestSettings (reposUrl username page))
+repositoriesDecoder : Json.Decode.Decoder Repositories
+repositoriesDecoder =
+    Json.Decode.list repositoryDecoder
 
 
-sendProfileHttpRequest url =
-    Http.send Http.defaultSettings (requestSettings url)
+githubRepoRequest :
+    String
+    -> Int
+    -> Http.Request
+        { parsed : Repositories
+        , raw :
+            { headers : Dict String String
+            , status : { code : Int, message : String }
+            , url : String
+            , body : String
+            }
+        }
+githubRepoRequest username page =
+    Http.request
+        { method = "GET"
+        , headers =
+            [ Http.header "Authorization" GithubToken.token ]
+        , url = reposUrl username page
+        , body = Http.emptyBody
+        , expect = Http.expectStringResponse parseGithubResponse
+        , timeout = Nothing
+        , withCredentials = False
+        }
+
+
+parseGithubResponse rawResponse =
+    let
+        parsed =
+            Json.Decode.decodeString repositoriesDecoder rawResponse.body
+    in
+        case parsed of
+            Err e ->
+                -- Err (Http.BadPayload "Bad repo JSON" rawResponse)
+                Err e
+
+            Ok repos ->
+                Ok
+                    { raw = rawResponse
+                    , parsed = repos
+                    }
 
 
 parseLinkHeader : Maybe String -> Maybe GithubLinkHeader

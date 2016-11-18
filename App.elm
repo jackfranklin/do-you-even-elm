@@ -1,8 +1,7 @@
-module MyApp exposing (..)
+module App exposing (..)
 
 import Html exposing (Html, text, div, h1, p)
 import BootstrapHelpers exposing (..)
-import Html.App
 import ViewHelpers
 import Types exposing (Msg(..), Model, ElmRepoCalculation, Repositories)
 import Github
@@ -129,9 +128,9 @@ init =
     ( initialModel, Cmd.none )
 
 
-main : Program Never
+main : Program Never Model Msg
 main =
-    Html.App.program
+    Html.program
         { init = init
         , view = view
         , update = update
