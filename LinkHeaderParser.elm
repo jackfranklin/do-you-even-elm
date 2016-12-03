@@ -44,16 +44,6 @@ findSubMatchForString str matches =
         matches
 
 
-maybeFlatten : Maybe (Maybe a) -> Maybe a
-maybeFlatten m =
-    case m of
-        Just (Just v) ->
-            Just v
-
-        _ ->
-            Nothing
-
-
 findNextPage : List String -> Maybe Int
 findNextPage =
     findPageByRel "next"
@@ -74,32 +64,10 @@ findLastPage =
     findPageByRel "last"
 
 
-
--- TODO: the amount of flattens is pretty rubbish
--- got to be a better way to work with this data
-
-
-isJust : Maybe a -> Bool
-isJust a =
-    case a of
-        Just _ ->
-            True
-
-        Nothing ->
-            False
-
-
-keepValuesFromStringList : List (Maybe String) -> List String
-keepValuesFromStringList list =
-    list
-        |> List.filter isJust
-        |> List.map (Maybe.withDefault "")
-
-
 findPageByRel : String -> List String -> Maybe Int
 findPageByRel rel headers =
     List.map runHeaderThroughRegex headers
         |> List.Extra.find (findSubMatchForString rel)
         |> Maybe.andThen List.head
-        |> Maybe.andThen (\m -> List.head (keepValuesFromStringList m.submatches))
-        |> Maybe.andThen (\m -> Result.toMaybe (String.toInt m))
+        |> Maybe.andThen (\m -> List.head (List.filterMap identity m.submatches))
+        |> Maybe.andThen (Result.toMaybe << String.toInt)
