@@ -1,34 +1,22 @@
 {
-  "name": "elm-boilerplate",
+  "name": "do-you-even-elm",
   "version": "1.1.0",
   "description": "",
   "private": true,
   "scripts": {
-    "test": "gulp test"
+    "start": "elm-app start",
+    "build": "elm-app build",
+    "test": "elm-app test",
+    "deploy": "elm-app build && surge --domain doyouevenelm.com --project build",
+    "install-all": "yarn install && elm-package install && elm-test --add-dependencies tests/elm-package.json && (cd tests && elm-package install)"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "del": "^2.2.2",
+    "create-elm-app": "^1.6.0",
     "elm": "^0.18.0",
-    "elm-test": "^0.18.9",
-    "gulp": "3.9.1",
-    "gulp-bump": "^2.4.0",
-    "gulp-elm": "^0.6.1",
-    "gulp-filter": "^4.0.0",
-    "gulp-git": "^1.11.3",
-    "gulp-load-plugins": "^1.2.4",
-    "gulp-notify": "^2.2.0",
-    "gulp-plumber": "1.1.0",
-    "gulp-sequence": "0.4.6",
-    "gulp-shell": "^0.5.2",
-    "gulp-surge": "0.1.0",
-    "gulp-tag-version": "1.3.0",
-    "gulp-uglify": "^2.0.0",
-    "gulp-util": "^3.0.7",
-    "gulp-watch": "^4.3.6",
-    "live-server": "^1.0.0"
+    "elm-test": "^0.18.9"
   }
 }
