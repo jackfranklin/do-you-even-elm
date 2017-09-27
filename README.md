@@ -6,10 +6,11 @@ Built with Elm, hosted at doyouevenelm.com by surge.sh.
 
 ## Running locally
 
+You'll need Yarn installed.
+
 - `git clone` the repo
-- `npm install && elm package install`
-- `gulp`
-- `open http://localhost:8080`
+- `yarn run install`
+- `yarn run start`
 
 Changes are live reloaded in the browser, and Elm output is available in the console.
 
@@ -28,12 +29,12 @@ This is used to authenticate requests to GitHub as to not get rate limited so of
 
 ## Tests
 
-- `gulp test`
-- `gulp watch-test` in development
+- `yarn test` for a one off run
+- `yarn test --watch` for a continuous watch mode
 
 ## Production build
 
-- `gulp build-prod`
+- `yarn build`
 
 ## TODO
 
@@ -43,8 +44,6 @@ This code is very much WIP! Here's some things which I hope to work on (and welc
 - Consider creating an `elm-github-api` package, which would remove a lot of the logic from this project.
 - Nicer loading spinners.
 - Use elm-navigation to update the URL based on the current username.
-- Cache data, especially once [persistent-cache](https://github.com/elm-lang/persistent-cache) is released.
 - Pull some of the logic around github data out of App.elm and into its own module.
 - Figure out how better to merge two `RemoteData` instances where each one contains an array.
 - Actually show proper error messages!
-
