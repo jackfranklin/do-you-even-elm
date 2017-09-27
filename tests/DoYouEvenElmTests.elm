@@ -1,8 +1,7 @@
-module Tests exposing (..)
+module DoYouEvenElmTests exposing (..)
 
 import Test exposing (..)
 import Expect
-import String
 import ElmRepoRatio
 import Types exposing (Repository)
 import GithubApi

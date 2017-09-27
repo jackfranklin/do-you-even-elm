@@ -1,23 +1,24 @@
 {
     "version": "1.0.0",
-    "summary": "Sample Elm Test",
+    "summary": "Test Suites",
     "repository": "https://github.com/user/project.git",
-    "license": "BSD-3-Clause",
+    "license": "BSD3",
     "source-directories": [
-        ".",
-        ".."
+        "..",
+        "."
     ],
     "exposed-modules": [],
     "dependencies": {
-        "elm-community/elm-test": "3.0.0 <= v < 4.0.0",
+        "eeue56/elm-html-test": "5.1.1 <= v < 6.0.0",
+        "elm-community/elm-test": "4.0.0 <= v < 5.0.0",
+        "elm-community/json-extra": "2.0.0 <= v < 3.0.0",
+        "elm-community/list-extra": "4.0.0 <= v < 5.0.0",
         "elm-lang/core": "5.0.0 <= v < 6.0.0",
         "elm-lang/html": "2.0.0 <= v < 3.0.0",
         "elm-lang/http": "1.0.0 <= v < 2.0.0",
+        "ggb/numeral-elm": "1.2.3 <= v < 2.0.0",
         "krisajenkins/remotedata": "4.0.0 <= v < 5.0.0",
-        "lukewestby/elm-http-builder": "4.0.0 <= v < 5.0.0",
-        "rtfeldman/node-test-runner": "3.0.0 <= v < 4.0.0",
-        "elm-community/json-extra": "2.0.0 <= v < 3.0.0",
-        "elm-community/list-extra": "4.0.0 <= v < 5.0.0"
+        "mgold/elm-date-format": "1.1.7 <= v < 2.0.0"
     },
     "elm-version": "0.18.0 <= v < 0.19.0"
 }
