@@ -1,9 +1,10 @@
 module Tests exposing (..)
 
 import Test exposing (..)
+import Expect
 import DoYouEvenElmTests
 
 
-suite : Test
-suite =
+all : Test
+all =
     DoYouEvenElmTests.all
