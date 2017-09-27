@@ -55,7 +55,7 @@ parseGithubRepoResponse res =
 
         Ok data ->
             NewGithubResponse
-                { linkHeader = Dict.get "Link" data.raw.headers
+                { linkHeader = Dict.get "link" data.raw.headers
                 , repositories = (RemoteData.Success data.parsed)
                 }
 
