@@ -1,4 +1,4 @@
-module App exposing (..)
+module Main exposing (..)
 
 import Html exposing (Html, text, div, h1, p)
 import BootstrapHelpers exposing (..)
