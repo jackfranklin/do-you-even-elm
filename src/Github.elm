@@ -24,8 +24,7 @@ githubProfileHttpRequest : String -> Http.Request GithubProfile
 githubProfileHttpRequest url =
     Http.request
         { method = "GET"
-        , headers =
-            [ Http.header "Authorization" GithubToken.token ]
+        , headers = GithubApi.githubRepoHeaders
         , url = url
         , body = Http.emptyBody
         , expect = Http.expectJson profileDecoder
@@ -51,7 +50,7 @@ parseGithubRepoResponse :
 parseGithubRepoResponse res =
     case res of
         Err e ->
-            NewGithubResponse (GithubResponse Nothing (RemoteData.Failure e))
+            NewGithubResponse (GithubResponse Nothing (RemoteData.Failure (Debug.log "error" e)))
 
         Ok data ->
             NewGithubResponse

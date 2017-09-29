@@ -31,6 +31,16 @@ repositoriesDecoder =
     Json.Decode.list repositoryDecoder
 
 
+githubRepoHeaders : List Http.Header
+githubRepoHeaders =
+    case GithubToken.token of
+        "" ->
+            []
+
+        token ->
+            [ Http.header "Authorization" token ]
+
+
 githubRepoRequest :
     String
     -> Int
@@ -46,8 +56,7 @@ githubRepoRequest :
 githubRepoRequest username page =
     Http.request
         { method = "GET"
-        , headers =
-            [ Http.header "Authorization" GithubToken.token ]
+        , headers = githubRepoHeaders
         , url = reposUrl username page
         , body = Http.emptyBody
         , expect = Http.expectStringResponse parseGithubResponse

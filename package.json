@@ -8,7 +8,7 @@
     "build": "elm-app build",
     "test": "elm-app test",
     "deploy": "elm-app build && surge --domain doyouevenelm.com --project build",
-    "install-all": "yarn install && elm-package install && elm-test --add-dependencies tests/elm-package.json && (cd tests && elm-package install)"
+    "install-all": "yarn install && elm-package install --yes && elm-test --add-dependencies tests/elm-package.json && (cd tests && elm-package install --yes)"
   },
   "keywords": [],
   "author": "",
