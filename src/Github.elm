@@ -4,7 +4,6 @@ import Types exposing (Repository, Repositories, Msg(..), GithubResponse, Github
 import Dict
 import Task
 import GithubApi
-import GithubToken
 import RemoteData
 import Http
 import Json.Decode exposing (succeed, field, oneOf, maybe)
@@ -16,7 +15,7 @@ profileDecoder =
     succeed GithubProfile
         |: (field "html_url" Json.Decode.string)
         |: (field "avatar_url" Json.Decode.string)
-        |: (field "name" Json.Decode.string)
+        |: (field "name" (oneOf [ Json.Decode.string, Json.Decode.null "(No name given)" ]))
         |: (maybe (field "bio" Json.Decode.string))
 
 
