@@ -17,6 +17,7 @@
   "devDependencies": {
     "create-elm-app": "^1.6.0",
     "elm": "^0.18.0",
-    "elm-test": "^0.18.9"
+    "elm-test": "^0.18.9",
+    "surge": "^0.19.0"
   }
 }
