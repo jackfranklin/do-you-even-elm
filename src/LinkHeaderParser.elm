@@ -1,6 +1,6 @@
 module LinkHeaderParser exposing (parse, GithubLinkHeader)
 
-import Regex
+import LinkHeader exposing (WebLink, LinkRel(..))
 import List.Extra
 
 
@@ -12,62 +12,19 @@ type alias GithubLinkHeader =
     }
 
 
-splitHeaderString : String -> List String
-splitHeaderString =
-    String.split ","
-
-
 parse : String -> GithubLinkHeader
 parse str =
     let
-        headers =
-            splitHeaderString str
+        webLinks =
+            LinkHeader.parse str
     in
-        { firstPage = findFirstPage headers
-        , prevPage = findPrevPage headers
-        , nextPage = findNextPage headers
-        , lastPage = findLastPage headers
+        { firstPage = findHeaderAndGetNumber LinkHeader.webLinkIsFirst webLinks
+        , lastPage = findHeaderAndGetNumber LinkHeader.webLinkIsLast webLinks
+        , nextPage = findHeaderAndGetNumber LinkHeader.webLinkIsNext webLinks
+        , prevPage = findHeaderAndGetNumber LinkHeader.webLinkIsPrev webLinks
         }
 
 
-runHeaderThroughRegex : String -> List Regex.Match
-runHeaderThroughRegex =
-    Regex.find (Regex.AtMost 1) (Regex.regex ".+&page=(\\d+).+rel=\"(\\w+)\"")
-
-
-findSubMatchForString : String -> List Regex.Match -> Bool
-findSubMatchForString str matches =
-    List.any
-        (\match ->
-            List.any (\sub -> sub == Just str) match.submatches
-        )
-        matches
-
-
-findNextPage : List String -> Maybe Int
-findNextPage =
-    findPageByRel "next"
-
-
-findPrevPage : List String -> Maybe Int
-findPrevPage =
-    findPageByRel "prev"
-
-
-findFirstPage : List String -> Maybe Int
-findFirstPage =
-    findPageByRel "first"
-
-
-findLastPage : List String -> Maybe Int
-findLastPage =
-    findPageByRel "last"
-
-
-findPageByRel : String -> List String -> Maybe Int
-findPageByRel rel headers =
-    List.map runHeaderThroughRegex headers
-        |> List.Extra.find (findSubMatchForString rel)
-        |> Maybe.andThen List.head
-        |> Maybe.andThen (\m -> List.head (List.filterMap identity m.submatches))
-        |> Maybe.andThen (Result.toMaybe << String.toInt)
+findHeaderAndGetNumber : (WebLink -> Bool) -> List WebLink -> Maybe Int
+findHeaderAndGetNumber isWebLink webLinks =
+    List.Extra.find isWebLink webLinks |> Maybe.map .rel |> Maybe.map LinkHeader.getIntegerForRel
