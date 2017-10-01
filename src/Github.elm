@@ -3,8 +3,9 @@ module Github exposing (fetchGithubData, fetchGithubProfile)
 import Types exposing (Repository, Repositories, Msg(..), GithubResponse, GithubProfile)
 import Dict
 import Task
-import GithubApi
+import GithubRepositories
 import RemoteData
+import GithubHeaders
 import Http
 import GithubDecoders
 
@@ -13,7 +14,7 @@ githubProfileHttpRequest : String -> Http.Request GithubProfile
 githubProfileHttpRequest url =
     Http.request
         { method = "GET"
-        , headers = GithubApi.githubRepoHeaders
+        , headers = GithubHeaders.headers
         , url = url
         , body = Http.emptyBody
         , expect = Http.expectJson GithubDecoders.profile
@@ -50,6 +51,6 @@ parseGithubRepoResponse res =
 
 fetchGithubData : String -> Int -> Cmd Msg
 fetchGithubData username page =
-    GithubApi.githubRepoRequest username page
+    GithubRepositories.githubRepoRequest username page
         |> Http.toTask
         |> Task.attempt parseGithubRepoResponse

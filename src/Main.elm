@@ -5,7 +5,7 @@ import BootstrapHelpers exposing (..)
 import ViewHelpers
 import Types exposing (Msg(..), Model, ElmRepoCalculation, Repositories)
 import Github
-import GithubApi
+import GithubRepositories
 import RemoteData exposing (WebData)
 import ElmRepoRatio
 
@@ -56,7 +56,7 @@ update msg model =
         NewGithubResponse { linkHeader, repositories } ->
             let
                 headers =
-                    GithubApi.parseLinkHeader linkHeader
+                    GithubRepositories.parseLinkHeader linkHeader
 
                 nextCommand =
                     case headers of

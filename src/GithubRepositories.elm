@@ -1,10 +1,8 @@
-module GithubApi exposing (..)
+module GithubRepositories exposing (..)
 
 import Http
 import Types exposing (GithubResponse, Repositories, Repository)
-import String
-import Regex
-import GithubToken
+import GithubHeaders
 import Dict exposing (Dict)
 import LinkHeaderParser exposing (GithubLinkHeader)
 import GithubDecoders
@@ -14,16 +12,6 @@ import Json.Decode
 reposUrl : String -> Int -> String
 reposUrl username page =
     "https://api.github.com/users/" ++ username ++ "/repos?per_page=100&page=" ++ (toString page)
-
-
-githubRepoHeaders : List Http.Header
-githubRepoHeaders =
-    case GithubToken.token of
-        "" ->
-            []
-
-        token ->
-            [ Http.header "Authorization" token ]
 
 
 githubRepoRequest :
@@ -41,7 +29,7 @@ githubRepoRequest :
 githubRepoRequest username page =
     Http.request
         { method = "GET"
-        , headers = githubRepoHeaders
+        , headers = GithubHeaders.headers
         , url = reposUrl username page
         , body = Http.emptyBody
         , expect = Http.expectStringResponse parseGithubResponse
