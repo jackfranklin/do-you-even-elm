@@ -1,34 +1,19 @@
 module GithubApi exposing (..)
 
 import Http
-import Json.Decode exposing (succeed, field, oneOf, maybe)
-import Json.Decode.Extra exposing ((|:))
 import Types exposing (GithubResponse, Repositories, Repository)
 import String
 import Regex
 import GithubToken
 import Dict exposing (Dict)
 import LinkHeaderParser exposing (GithubLinkHeader)
+import GithubDecoders
+import Json.Decode
 
 
 reposUrl : String -> Int -> String
 reposUrl username page =
     "https://api.github.com/users/" ++ username ++ "/repos?per_page=100&page=" ++ (toString page)
-
-
-repositoryDecoder : Json.Decode.Decoder Repository
-repositoryDecoder =
-    succeed Repository
-        |: (field "name" Json.Decode.string)
-        |: (field "html_url" Json.Decode.string)
-        |: (field "stargazers_count" Json.Decode.int)
-        |: (maybe (field "language" Json.Decode.string))
-        |: (field "updated_at" Json.Decode.string)
-
-
-repositoriesDecoder : Json.Decode.Decoder Repositories
-repositoriesDecoder =
-    Json.Decode.list repositoryDecoder
 
 
 githubRepoHeaders : List Http.Header
@@ -71,7 +56,7 @@ parseGithubResponse :
 parseGithubResponse rawResponse =
     let
         parsed =
-            Json.Decode.decodeString repositoriesDecoder rawResponse.body
+            Json.Decode.decodeString GithubDecoders.repositories rawResponse.body
     in
         case parsed of
             Err e ->

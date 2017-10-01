@@ -6,17 +6,7 @@ import Task
 import GithubApi
 import RemoteData
 import Http
-import Json.Decode exposing (succeed, field, oneOf, maybe)
-import Json.Decode.Extra exposing ((|:))
-
-
-profileDecoder : Json.Decode.Decoder GithubProfile
-profileDecoder =
-    succeed GithubProfile
-        |: (field "html_url" Json.Decode.string)
-        |: (field "avatar_url" Json.Decode.string)
-        |: (field "name" (oneOf [ Json.Decode.string, Json.Decode.null "(No name given)" ]))
-        |: (maybe (field "bio" Json.Decode.string))
+import GithubDecoders
 
 
 githubProfileHttpRequest : String -> Http.Request GithubProfile
@@ -26,7 +16,7 @@ githubProfileHttpRequest url =
         , headers = GithubApi.githubRepoHeaders
         , url = url
         , body = Http.emptyBody
-        , expect = Http.expectJson profileDecoder
+        , expect = Http.expectJson GithubDecoders.profile
         , timeout = Nothing
         , withCredentials = False
         }
@@ -63,17 +53,3 @@ fetchGithubData username page =
     GithubApi.githubRepoRequest username page
         |> Http.toTask
         |> Task.attempt parseGithubRepoResponse
-
-
-
--- HttpAll.makeRequest repositoriesDecoder
---     (\httpErr ->
---         NewGithubResponse (GithubResponse Nothing (RemoteData.Failure httpErr))
---     )
---     (\response ->
---         NewGithubResponse
---             { linkHeader = Dict.get "Link" response.raw.headers
---             , repositories = (RemoteData.Success response.parsed)
---             }
---     )
---     (GithubApi.sendRepoHttpRequest username page)
