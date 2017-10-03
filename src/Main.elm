@@ -25,13 +25,10 @@ update msg model =
     case msg of
         UrlChange newLocation ->
             let
-                _ =
-                    Debug.log "location" newLocation
-
                 username =
                     String.dropLeft 1 newLocation.pathname
 
-                newModel =
+                modelForFetchingData =
                     { model
                         | results = Nothing
                         , repositories = RemoteData.Loading
@@ -42,7 +39,7 @@ update msg model =
                 if String.isEmpty username then
                     ( model, Cmd.none )
                 else
-                    ( newModel
+                    ( modelForFetchingData
                     , Cmd.batch
                         [ Github.fetchGithubData username 1
                         , Github.fetchGithubProfile username
