@@ -2,12 +2,11 @@ module Main exposing (..)
 
 import Html exposing (Html, text, div, h1, p)
 import BootstrapHelpers exposing (..)
+import ProcessGithubResponse
 import ViewHelpers
 import Types exposing (Msg(..), Model, ElmRepoCalculation, Repositories)
 import Github
-import GithubRepositories
 import RemoteData exposing (WebData)
-import ElmRepoRatio
 
 
 initialModel : Model
@@ -17,16 +16,6 @@ initialModel =
     , results = Nothing
     , githubProfile = RemoteData.NotAsked
     }
-
-
-calculateResults : WebData Repositories -> Maybe ElmRepoCalculation
-calculateResults repos =
-    case repos of
-        RemoteData.Success data ->
-            Just (ElmRepoRatio.calculate data)
-
-        _ ->
-            Nothing
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -47,66 +36,11 @@ update msg model =
         UsernameChange username ->
             ( { model | username = username }, Cmd.none )
 
-        NoOp ->
-            ( model, Cmd.none )
-
         NewGithubProfile profile ->
             ( { model | githubProfile = profile }, Cmd.none )
 
-        NewGithubResponse { linkHeader, repositories } ->
-            let
-                headers =
-                    GithubRepositories.parseLinkHeader linkHeader
-
-                nextCommand =
-                    case headers of
-                        Just { nextPage } ->
-                            case nextPage of
-                                Just x ->
-                                    Github.fetchGithubData model.username x
-
-                                Nothing ->
-                                    Cmd.none
-
-                        Nothing ->
-                            Cmd.none
-
-                requestSucceeded =
-                    RemoteData.isSuccess repositories
-
-                mergedRepos =
-                    appendRemoteDataRepositories model.repositories repositories
-
-                newModel =
-                    { model
-                        | repositories = mergedRepos
-                        , results = calculateResults mergedRepos
-                    }
-            in
-                ( newModel
-                , if requestSucceeded then
-                    nextCommand
-                  else
-                    Cmd.none
-                )
-
-
-appendRemoteDataRepositories : WebData Repositories -> WebData Repositories -> WebData Repositories
-appendRemoteDataRepositories first second =
-    case first of
-        RemoteData.Success repos ->
-            case second of
-                RemoteData.Success newRepos ->
-                    RemoteData.Success (repos ++ newRepos)
-
-                RemoteData.Failure e ->
-                    RemoteData.Failure e
-
-                _ ->
-                    first
-
-        _ ->
-            second
+        NewGithubResponse data ->
+            ProcessGithubResponse.process model data
 
 
 view : Model -> Html Msg

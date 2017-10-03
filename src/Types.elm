@@ -3,6 +3,13 @@ module Types exposing (..)
 import RemoteData exposing (WebData)
 
 
+type Msg
+    = FetchGithubData
+    | UsernameChange String
+    | NewGithubResponse GithubResponse
+    | NewGithubProfile (WebData GithubProfile)
+
+
 type alias Model =
     { repositories : WebData Repositories
     , username : String
@@ -45,11 +52,3 @@ type alias GithubResponse =
     { linkHeader : Maybe String
     , repositories : WebData Repositories
     }
-
-
-type Msg
-    = FetchGithubData
-    | UsernameChange String
-    | NewGithubResponse GithubResponse
-    | NoOp
-    | NewGithubProfile (WebData GithubProfile)
