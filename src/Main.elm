@@ -7,12 +7,14 @@ import ViewHelpers
 import Types exposing (Msg(..), Model, ElmRepoCalculation, Repositories)
 import Github
 import RemoteData exposing (WebData)
+import Navigation exposing (Location)
+import String
 
 
 initialModel : Model
 initialModel =
     { repositories = RemoteData.NotAsked
-    , username = "jackfranklin"
+    , username = ""
     , results = Nothing
     , githubProfile = RemoteData.NotAsked
     }
@@ -21,17 +23,34 @@ initialModel =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        UrlChange newLocation ->
+            let
+                _ =
+                    Debug.log "location" newLocation
+
+                username =
+                    String.dropLeft 1 newLocation.pathname
+
+                newModel =
+                    { model
+                        | results = Nothing
+                        , repositories = RemoteData.Loading
+                        , githubProfile = RemoteData.Loading
+                        , username = username
+                    }
+            in
+                if String.isEmpty username then
+                    ( model, Cmd.none )
+                else
+                    ( newModel
+                    , Cmd.batch
+                        [ Github.fetchGithubData username 1
+                        , Github.fetchGithubProfile username
+                        ]
+                    )
+
         FetchGithubData ->
-            ( { model
-                | results = Nothing
-                , repositories = RemoteData.Loading
-                , githubProfile = RemoteData.Loading
-              }
-            , Cmd.batch
-                [ Github.fetchGithubData model.username 1
-                , Github.fetchGithubProfile model.username
-                ]
-            )
+            ( model, Navigation.newUrl ("/" ++ model.username) )
 
         UsernameChange username ->
             ( { model | username = username }, Cmd.none )
@@ -56,14 +75,14 @@ view model =
         ]
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initialModel, Cmd.none )
+init : Location -> ( Model, Cmd Msg )
+init location =
+    update (UrlChange location) initialModel
 
 
 main : Program Never Model Msg
 main =
-    Html.program
+    Navigation.program UrlChange
         { init = init
         , view = view
         , update = update

@@ -1,6 +1,7 @@
 module Types exposing (..)
 
 import RemoteData exposing (WebData)
+import Navigation
 
 
 type Msg
@@ -8,6 +9,7 @@ type Msg
     | UsernameChange String
     | NewGithubResponse GithubResponse
     | NewGithubProfile (WebData GithubProfile)
+    | UrlChange Navigation.Location
 
 
 type alias Model =
