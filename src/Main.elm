@@ -30,16 +30,6 @@ usernameFromLocation { pathname } =
             Just username
 
 
-startFetchingGithubData : Model -> String -> Model
-startFetchingGithubData model newUsername =
-    { model
-        | results = Nothing
-        , repositories = RemoteData.Loading
-        , githubProfile = RemoteData.Loading
-        , username = newUsername
-    }
-
-
 fetchGithubCommands : String -> Int -> Cmd Msg
 fetchGithubCommands username page =
     Cmd.batch
@@ -48,15 +38,25 @@ fetchGithubCommands username page =
         ]
 
 
+fetchInitialDataForUser : Model -> String -> ( Model, Cmd Msg )
+fetchInitialDataForUser model name =
+    ( { model
+        | results = Nothing
+        , repositories = RemoteData.Loading
+        , githubProfile = RemoteData.Loading
+        , username = name
+      }
+    , fetchGithubCommands name 1
+    )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         UrlChange newLocation ->
             case usernameFromLocation newLocation of
                 Just name ->
-                    ( startFetchingGithubData model name
-                    , fetchGithubCommands name 1
-                    )
+                    fetchInitialDataForUser model name
 
                 Nothing ->
                     ( model, Cmd.none )
