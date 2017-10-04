@@ -20,31 +20,46 @@ initialModel =
     }
 
 
+usernameFromLocation : Location -> Maybe String
+usernameFromLocation { pathname } =
+    case String.dropLeft 1 pathname of
+        "" ->
+            Nothing
+
+        username ->
+            Just username
+
+
+startFetchingGithubData : Model -> String -> Model
+startFetchingGithubData model newUsername =
+    { model
+        | results = Nothing
+        , repositories = RemoteData.Loading
+        , githubProfile = RemoteData.Loading
+        , username = newUsername
+    }
+
+
+fetchGithubCommands : String -> Int -> Cmd Msg
+fetchGithubCommands username page =
+    Cmd.batch
+        [ Github.fetchGithubData username page
+        , Github.fetchGithubProfile username
+        ]
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         UrlChange newLocation ->
-            let
-                username =
-                    String.dropLeft 1 newLocation.pathname
-
-                modelForFetchingData =
-                    { model
-                        | results = Nothing
-                        , repositories = RemoteData.Loading
-                        , githubProfile = RemoteData.Loading
-                        , username = username
-                    }
-            in
-                if String.isEmpty username then
-                    ( model, Cmd.none )
-                else
-                    ( modelForFetchingData
-                    , Cmd.batch
-                        [ Github.fetchGithubData username 1
-                        , Github.fetchGithubProfile username
-                        ]
+            case usernameFromLocation newLocation of
+                Just name ->
+                    ( startFetchingGithubData model name
+                    , fetchGithubCommands name 1
                     )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
         FetchGithubData ->
             ( model, Navigation.newUrl ("/" ++ model.username) )
