@@ -4,7 +4,22 @@ import RemoteData exposing (WebData)
 import ElmRepoRatio
 import Github
 import GithubRepositories
-import Types exposing (Msg(..), Model, ElmRepoCalculation, Repositories)
+import Types exposing (Msg(..), StorageResult, Model, ElmRepoCalculation, Repositories)
+import LocalStorage exposing (saveResult)
+
+
+saveToCache : Model -> Cmd Msg
+saveToCache model =
+    case ( model.repositories, model.githubProfile ) of
+        ( RemoteData.Success repos, RemoteData.Success profile ) ->
+            saveResult <|
+                { githubProfile = profile
+                , githubRepositories = repos
+                , username = model.username
+                }
+
+        _ ->
+            Cmd.none
 
 
 process :
@@ -43,9 +58,9 @@ process model { linkHeader, repositories } =
     in
         ( newModel
         , if requestSucceeded then
-            nextCommand
+            Cmd.batch [ nextCommand, saveToCache newModel ]
           else
-            Cmd.none
+            saveToCache newModel
         )
 
 

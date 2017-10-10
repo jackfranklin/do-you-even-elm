@@ -4,12 +4,20 @@ import RemoteData exposing (WebData)
 import Navigation
 
 
+type alias StorageResult =
+    { githubProfile : GithubProfile
+    , githubRepositories : Repositories
+    , username : String
+    }
+
+
 type Msg
     = FetchGithubData
     | UsernameChange String
     | NewGithubResponse GithubResponse
     | NewGithubProfile (WebData GithubProfile)
     | UrlChange Navigation.Location
+    | NewStorageResult ( String, Maybe StorageResult )
 
 
 type alias Model =
