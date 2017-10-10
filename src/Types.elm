@@ -17,6 +17,7 @@ type alias Model =
     , username : String
     , results : Maybe ElmRepoCalculation
     , githubProfile : WebData GithubProfile
+    , githubToken : Maybe String
     }
 
 

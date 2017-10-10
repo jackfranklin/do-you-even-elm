@@ -21,7 +21,7 @@ process model { linkHeader, repositories } =
                 Just { nextPage } ->
                     case nextPage of
                         Just x ->
-                            Github.fetchGithubData model.username x
+                            Github.fetchGithubData model.githubToken model.username x
 
                         Nothing ->
                             Cmd.none

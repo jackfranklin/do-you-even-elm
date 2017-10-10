@@ -14,18 +14,11 @@ You'll need Yarn installed.
 
 Changes are live reloaded in the browser, and Elm output is available in the console.
 
-You'll also need to create `GithubToken.elm` that looks like so:
+The Github requests use a token to avoid rate limiting. If you want to add your own token, you can create a `.env` file with:
 
-```elm
-module GithubToken exposing (token)
-
-
-token : String
-token =
-    "token personal-access-token-here"
 ```
-
-This is used to authenticate requests to GitHub as to not get rate limited so often.
+export ELM_APP_GITHUB_TOKEN="YOUR_GITHUB_TOKEN_HERE"
+```
 
 ## Tests
 
@@ -40,10 +33,8 @@ This is used to authenticate requests to GitHub as to not get rate limited so of
 
 This code is very much WIP! Here's some things which I hope to work on (and welcome PRs for!)
 
-- Tidy up `Github.elm` and `GithubApi.elm`, it's really unclear what's going on and why there are two.
 - Consider creating an `elm-github-api` package, which would remove a lot of the logic from this project.
 - Nicer loading spinners.
-- Use elm-navigation to update the URL based on the current username.
 - Pull some of the logic around github data out of App.elm and into its own module.
 - Figure out how better to merge two `RemoteData` instances where each one contains an array.
 - Actually show proper error messages!

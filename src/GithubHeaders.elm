@@ -1,14 +1,13 @@
 module GithubHeaders exposing (headers)
 
 import Http
-import GithubToken
 
 
-headers : List Http.Header
-headers =
-    case GithubToken.token of
-        "" ->
+headers : Maybe String -> List Http.Header
+headers githubToken =
+    case githubToken of
+        Nothing ->
             []
 
-        token ->
-            [ Http.header "Authorization" token ]
+        Just token ->
+            [ Http.header "Authorization" ("token " ++ token) ]

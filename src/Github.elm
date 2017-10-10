@@ -10,11 +10,11 @@ import Http
 import GithubDecoders
 
 
-githubProfileHttpRequest : String -> Http.Request GithubProfile
-githubProfileHttpRequest url =
+githubProfileHttpRequest : Maybe String -> String -> Http.Request GithubProfile
+githubProfileHttpRequest githubToken url =
     Http.request
         { method = "GET"
-        , headers = GithubHeaders.headers
+        , headers = GithubHeaders.headers githubToken
         , url = url
         , body = Http.emptyBody
         , expect = Http.expectJson GithubDecoders.profile
@@ -23,9 +23,9 @@ githubProfileHttpRequest url =
         }
 
 
-fetchGithubProfile : String -> Cmd Msg
-fetchGithubProfile username =
-    githubProfileHttpRequest ("https://api.github.com/users/" ++ username)
+fetchGithubProfile : Maybe String -> String -> Cmd Msg
+fetchGithubProfile githubToken username =
+    githubProfileHttpRequest githubToken ("https://api.github.com/users/" ++ username)
         |> Http.toTask
         |> RemoteData.asCmd
         |> Cmd.map NewGithubProfile
@@ -49,8 +49,8 @@ parseGithubRepoResponse res =
                 }
 
 
-fetchGithubData : String -> Int -> Cmd Msg
-fetchGithubData username page =
-    GithubRepositories.githubRepoRequest username page
+fetchGithubData : Maybe String -> String -> Int -> Cmd Msg
+fetchGithubData githubToken username page =
+    GithubRepositories.githubRepoRequest githubToken username page
         |> Http.toTask
         |> Task.attempt parseGithubRepoResponse

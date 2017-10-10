@@ -15,7 +15,8 @@ reposUrl username page =
 
 
 githubRepoRequest :
-    String
+    Maybe String
+    -> String
     -> Int
     -> Http.Request
         { parsed : Repositories
@@ -26,10 +27,10 @@ githubRepoRequest :
             , body : String
             }
         }
-githubRepoRequest username page =
+githubRepoRequest githubToken username page =
     Http.request
         { method = "GET"
-        , headers = GithubHeaders.headers
+        , headers = GithubHeaders.headers githubToken
         , url = reposUrl username page
         , body = Http.emptyBody
         , expect = Http.expectStringResponse parseGithubResponse

@@ -11,12 +11,18 @@ import Navigation exposing (Location)
 import String
 
 
+type alias Flags =
+    { githubToken : String
+    }
+
+
 initialModel : Model
 initialModel =
     { repositories = RemoteData.NotAsked
     , username = ""
     , results = Nothing
     , githubProfile = RemoteData.NotAsked
+    , githubToken = Nothing
     }
 
 
@@ -30,11 +36,11 @@ usernameFromLocation { pathname } =
             Just username
 
 
-fetchGithubCommands : String -> Int -> Cmd Msg
-fetchGithubCommands username page =
+fetchGithubCommands : Maybe String -> String -> Int -> Cmd Msg
+fetchGithubCommands githubToken username page =
     Cmd.batch
-        [ Github.fetchGithubData username page
-        , Github.fetchGithubProfile username
+        [ Github.fetchGithubData githubToken username page
+        , Github.fetchGithubProfile githubToken username
         ]
 
 
@@ -46,7 +52,7 @@ fetchInitialDataForUser model name =
         , githubProfile = RemoteData.Loading
         , username = name
       }
-    , fetchGithubCommands name 1
+    , fetchGithubCommands model.githubToken name 1
     )
 
 
@@ -87,14 +93,21 @@ view model =
         ]
 
 
-init : Location -> ( Model, Cmd Msg )
-init location =
-    update (UrlChange location) initialModel
+updateModelWithToken : String -> Model -> Model
+updateModelWithToken token model =
+    { model | githubToken = (Just token) }
 
 
-main : Program Never Model Msg
+init : Flags -> Location -> ( Model, Cmd Msg )
+init flags location =
+    initialModel
+        |> updateModelWithToken flags.githubToken
+        |> update (UrlChange location)
+
+
+main : Program Flags Model Msg
 main =
-    Navigation.program UrlChange
+    Navigation.programWithFlags UrlChange
         { init = init
         , view = view
         , update = update
