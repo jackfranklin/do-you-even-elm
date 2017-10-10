@@ -7,6 +7,7 @@
     "start": "elm-app start",
     "build": "elm-app build",
     "test": "elm-app test",
+    "prettier": "prettier 'src/**/*.js' --write",
     "deploy": "elm-app build && mv build/index.html build/200.html && surge --domain doyouevenelm.com --project build",
     "install-all": "yarn install && elm-package install --yes && elm-test --add-dependencies tests/elm-package.json && (cd tests && elm-package install --yes)"
   },
@@ -18,6 +19,7 @@
     "create-elm-app": "^1.6.0",
     "elm": "^0.18.0",
     "elm-test": "^0.18.9",
+    "prettier": "^1.7.4",
     "surge": "^0.19.0"
   }
 }
