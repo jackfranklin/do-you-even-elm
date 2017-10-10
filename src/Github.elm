@@ -1,7 +1,7 @@
 module Github exposing (fetchGithubData, fetchGithubProfile)
 
 import Types exposing (Repository, Repositories, Msg(..), GithubResponse, GithubProfile)
-import Dict
+import Dict exposing (Dict)
 import Task
 import GithubRepositories
 import RemoteData
@@ -31,6 +31,19 @@ fetchGithubProfile githubToken username =
         |> Cmd.map NewGithubProfile
 
 
+getLinkHeader : Dict String String -> Maybe String
+getLinkHeader headers =
+    -- for some reason Firefox always uses uppercase Link
+    -- but in Chrome you have to use lowercase
+    -- not sure if this is an Elm bug or quite where it comes from
+    case Dict.get "Link" headers of
+        Nothing ->
+            Dict.get "link" headers
+
+        x ->
+            x
+
+
 parseGithubRepoResponse :
     Result Http.Error
         { parsed : Repositories
@@ -44,7 +57,7 @@ parseGithubRepoResponse res =
 
         Ok data ->
             NewGithubResponse
-                { linkHeader = Dict.get "link" data.raw.headers
+                { linkHeader = getLinkHeader data.raw.headers
                 , repositories = (RemoteData.Success data.parsed)
                 }
 
