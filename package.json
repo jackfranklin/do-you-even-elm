@@ -6,10 +6,11 @@
   "scripts": {
     "start": "elm-app start",
     "build": "elm-app build",
-    "test": "elm-app test",
+    "test": "yarn run sync-elm-deps && elm-app test",
     "prettier": "prettier 'src/**/*.js' --write",
     "deploy": "elm-app build && mv build/index.html build/200.html && surge --domain doyouevenelm.com --project build",
-    "install-all": "yarn install && elm-package install --yes && elm-test --add-dependencies tests/elm-package.json && (cd tests && elm-package install --yes)"
+    "sync-elm-deps": "elm-test --add-dependencies tests/elm-package.json",
+    "install-all": "yarn install && elm-package install --yes && yarn run sync-elm-deps && (cd tests && elm-package install --yes)"
   },
   "keywords": [],
   "author": "",
